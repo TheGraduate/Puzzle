@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HentaiPazzleVer1</string>
+
+    <string name="back_btn">Назад</string>
+
+    <string name="btn_play">Play</string>
+    <string name="btn_settings">Настройки</string>
+    <string name="btn_exit">Выйти</string>
+
+</resources>

@@ -90,7 +90,7 @@ class PuzzleManager (private val context: Context) {
             imageView.scaleType = ImageView.ScaleType.FIT_XY
             //imageView.adjustViewBounds = true
             //imageView.setPadding(0, 0, 0, 0)
-            imageView.setOnClickListener { onPuzzlePieceClick(it as ImageView, puzzleImages) }
+            imageView.setOnClickListener { onPuzzlePieceClick(it as ImageView) }
             imageView.tag = i
             puzzlePieces.add(imageView)
         }
@@ -125,7 +125,7 @@ class PuzzleManager (private val context: Context) {
         }
     }*/
 
-    private fun onPuzzlePieceClick(view: ImageView, puzzleImages: IntArray) {
+    private fun onPuzzlePieceClick(view: ImageView) {
         //this.puzzleImages = puzzleImages
 
         val clickedIndex = puzzlePieces.indexOf(view)
@@ -135,12 +135,14 @@ class PuzzleManager (private val context: Context) {
             if (isAdjacent(clickedIndex, lastClickedIndexLocal)) {
                 swapPieces(clickedIndex, lastClickedIndexLocal)
             }
+            animatePiece(view, false)
             lastClickedIndex = null // Сбросить индекс после попытки перемещения
+
         } else {
             lastClickedIndex = clickedIndex // Сохранить индекс текущего нажатого фрагмента
+            animatePiece(view, true)
         }
     }
-
 
     private fun isAdjacent(index1: Int, index2: Int): Boolean {
         val row1 = index1 / 3
@@ -179,6 +181,19 @@ class PuzzleManager (private val context: Context) {
         puzzleGrid.removeAllViews()
         puzzlePieces.forEach { puzzleGrid.addView(it) }
     }*/
+
+    private fun animatePiece(view: ImageView, highlight: Boolean) {
+        val scale = if (highlight) 1.1f else 1.0f
+        val elevation = if (highlight) 10f else 0f
+
+        view.animate()
+            .scaleX(scale)
+            .scaleY(scale)
+            .setDuration(200)
+            .start()
+
+        view.z = elevation
+    }
 
     private fun isPuzzleSolved(): Boolean {
         //this.puzzleImages = puzzleImages
