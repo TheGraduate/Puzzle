@@ -1,73 +1,50 @@
 package com.example.hentaipazzlever1
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.widget.GridLayout
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import kotlin.math.abs
 
-class PuzzleManager (private val context: Context) {
+class PuzzleManager(private val context: Context, private val selectedPuzzleResId: Int) {
 
     private lateinit var puzzleGrid: GridLayout
-    private lateinit var puzzleImages : IntArray
+    private lateinit var initialPositions: MutableList<Int>
     private val puzzlePieces = mutableListOf<ImageView>()
-    private var emptyCellIndex = 8
-    private val solvedImage = R.drawable.full
     private var lastClickedIndex: Int? = null
+    //private val solvedImage = selectedPuzzleResId
 
-    fun loadPuzzleImages(selectedPuzzle: Int): IntArray {
-        return when (selectedPuzzle) {
-            0 -> intArrayOf(
-                R.drawable.first,
-                R.drawable.sec,
-                R.drawable.third,
-                R.drawable.fourth,
-                R.drawable.fifth,
-                R.drawable.sixth,
-                R.drawable.seventh,
-                R.drawable.eigth,
-                R.drawable.blank
-            )
-            1 -> intArrayOf(
-                R.drawable.first,
-                R.drawable.sec,
-                R.drawable.third,
-                R.drawable.fourth,
-                R.drawable.fifth,
-                R.drawable.sixth,
-                R.drawable.seventh,
-                R.drawable.eigth,
-                R.drawable.blank
-            )
-            2 -> intArrayOf(
-                R.drawable.first,
-                R.drawable.sec,
-                R.drawable.third,
-                R.drawable.fourth,
-                R.drawable.fifth,
-                R.drawable.sixth,
-                R.drawable.seventh,
-                R.drawable.eigth,
-                R.drawable.blank
-            )
-            // Добавьте сюда другие пазлы
-            else -> intArrayOf(
-                R.mipmap.ic_placeholder,
-                R.mipmap.ic_placeholder,
-                R.mipmap.ic_placeholder,
-                R.mipmap.ic_placeholder,
-                R.mipmap.ic_placeholder,
-                R.mipmap.ic_placeholder,
-                R.mipmap.ic_placeholder,
-                R.mipmap.ic_placeholder,
-                R.drawable.blank
-            )
-        }
+    private fun loadBitmapFromResource(resourceId: Int): Bitmap {
+        return BitmapFactory.decodeResource(context.resources, resourceId)
     }
 
-    fun setupPuzzle(gridLayout: GridLayout, puzzleImages: IntArray) {
+    private fun splitBitmap(bitmap: Bitmap, rows: Int, cols: Int): List<Bitmap> {
+        val pieces = mutableListOf<Bitmap>()
+        val pieceWidth = bitmap.width / cols
+        val pieceHeight = bitmap.height / rows
+
+        initialPositions = mutableListOf<Int>()
+
+        for (row in 0 until rows) {
+            for (col in 0 until cols) {
+                val x = col * pieceWidth
+                val y = row * pieceHeight
+                pieces.add(Bitmap.createBitmap(bitmap, x, y, pieceWidth, pieceHeight))
+                initialPositions.add(row * cols + col)
+            }
+        }
+
+        return pieces
+    }
+
+    fun loadPuzzleImages(resourceId: Int, rows: Int = 3, cols: Int = 3): List<Bitmap> {
+        val bitmap = loadBitmapFromResource(resourceId)
+        return splitBitmap(bitmap, rows, cols)
+    }
+
+    fun setupPuzzle(gridLayout: GridLayout, puzzleImages: List<Bitmap>/*, solvedImageId: Int*/) {
         puzzleGrid = gridLayout
-        this.puzzleImages = puzzleImages
 
         puzzleGrid.removeAllViews()
         puzzlePieces.clear()
@@ -77,19 +54,13 @@ class PuzzleManager (private val context: Context) {
 
         for (i in puzzleImages.indices) {
             val imageView = ImageView(context)
-            imageView.setImageResource(puzzleImages[i])
+            imageView.setImageBitmap(puzzleImages[i])
             imageView.layoutParams = GridLayout.LayoutParams().apply {
                 width = pieceSize
                 height = pieceSize
-                /*rowSpec = GridLayout.spec(i / gridSize, 1f)
-                columnSpec = GridLayout.spec(i % gridSize, 1f)*/
                 setMargins(2, 2, 2, 2)
-
-
             }
             imageView.scaleType = ImageView.ScaleType.FIT_XY
-            //imageView.adjustViewBounds = true
-            //imageView.setPadding(0, 0, 0, 0)
             imageView.setOnClickListener { onPuzzlePieceClick(it as ImageView) }
             imageView.tag = i
             puzzlePieces.add(imageView)
@@ -97,68 +68,40 @@ class PuzzleManager (private val context: Context) {
 
         puzzlePieces.shuffle()
 
-        //emptyCellIndex = puzzlePieces.indexOfFirst { it.drawable.constantState == ContextCompat.getDrawable(context, R.drawable.blank)?.constantState }
-
-        for (i in puzzlePieces.indices) {
-            if (puzzleImages[i] == R.drawable.blank) {
-                emptyCellIndex = i
-                break
-            }
-        }
-
-        //puzzlePieces.forEach { gridLayout.addView(it) }
         for (piece in puzzlePieces) {
             puzzleGrid.addView(piece)
         }
 
+        //solvedImage = solvedImageId
     }
 
-   /* private fun onPuzzlePieceClick(view: ImageView) {
-        val clickedIndex = puzzlePieces.indexOf(view)
-        if (isAdjacent(clickedIndex, emptyCellIndex)) {
-            swapPieces(clickedIndex, emptyCellIndex)
-            emptyCellIndex = clickedIndex // Обновление индекса пустой ячейки после обмена
-            updatePuzzleGrid()
-            if (isPuzzleSolved(puzzleImages)) {
-                showPuzzleSolved(puzzleGrid)
-            }
-        }
-    }*/
-
     private fun onPuzzlePieceClick(view: ImageView) {
-        //this.puzzleImages = puzzleImages
-
         val clickedIndex = puzzlePieces.indexOf(view)
         val lastClickedIndexLocal = lastClickedIndex
 
         if (lastClickedIndexLocal != null) {
             if (isAdjacent(clickedIndex, lastClickedIndexLocal)) {
                 swapPieces(clickedIndex, lastClickedIndexLocal)
+                animatePiece(view, false) // Опускаем элемент после перестановки
+            } else {
+                // Несоседний элемент был выбран, опускаем уже выбранный кусочек обратно
+                animatePiece(puzzlePieces[lastClickedIndexLocal], false)
             }
-            animatePiece(view, false)
-            lastClickedIndex = null // Сбросить индекс после попытки перемещения
-
+            lastClickedIndex = null
         } else {
-            lastClickedIndex = clickedIndex // Сохранить индекс текущего нажатого фрагмента
+            lastClickedIndex = clickedIndex
             animatePiece(view, true)
         }
     }
 
     private fun isAdjacent(index1: Int, index2: Int): Boolean {
-        val row1 = index1 / 3
-        val col1 = index1 % 3
-        val row2 = index2 / 3
-        val col2 = index2 % 3
+        val row1 = initialPositions[index1] / 3
+        val col1 = initialPositions[index1] % 3
+        val row2 = initialPositions[index2] / 3
+        val col2 = initialPositions[index2] % 3
 
         return (row1 == row2 && abs(col1 - col2) == 1) || (col1 == col2 && abs(row1 - row2) == 1)
     }
-
-    /*private fun swapPieces(index1: Int, index2: Int) {
-        val temp = puzzlePieces[index1]
-        puzzlePieces[index1] = puzzlePieces[index2]
-        puzzlePieces[index2] = temp
-        emptyCellIndex = index1
-    }*/
 
     private fun swapPieces(index1: Int, index2: Int) {
         val temp = puzzlePieces[index1]
@@ -170,17 +113,12 @@ class PuzzleManager (private val context: Context) {
             puzzleGrid.addView(piece)
         }
 
-        emptyCellIndex = index1
+        animatePiece(puzzlePieces[index1], false)
 
-        if (::puzzleImages.isInitialized && isPuzzleSolved()) {
+        if (::initialPositions.isInitialized && isPuzzleSolved()) {
             showPuzzleSolved()
         }
     }
-
-    /*private fun updatePuzzleGrid() {
-        puzzleGrid.removeAllViews()
-        puzzlePieces.forEach { puzzleGrid.addView(it) }
-    }*/
 
     private fun animatePiece(view: ImageView, highlight: Boolean) {
         val scale = if (highlight) 1.1f else 1.0f
@@ -189,26 +127,22 @@ class PuzzleManager (private val context: Context) {
         view.animate()
             .scaleX(scale)
             .scaleY(scale)
+            .translationZ(elevation) // используем translationZ для эффекта поднятия/опускания
             .setDuration(200)
             .start()
-
-        view.z = elevation
     }
 
     private fun isPuzzleSolved(): Boolean {
-        //this.puzzleImages = puzzleImages
-        if (!::puzzleImages.isInitialized) return false
+        if (!::initialPositions.isInitialized) return false
         return puzzlePieces.withIndex().all { (index, imageView) ->
-            val drawable = imageView.drawable
-            val expectedDrawable = ContextCompat.getDrawable(context, puzzleImages[index])
-            drawable.constantState == expectedDrawable?.constantState
+            initialPositions[index] == imageView.tag as? Int
         }
     }
 
     private fun showPuzzleSolved() {
         puzzleGrid.removeAllViews()
         ImageView(context).apply {
-            setImageResource(solvedImage)
+            setImageResource(selectedPuzzleResId)
             layoutParams = GridLayout.LayoutParams().apply {
                 width = GridLayout.LayoutParams.MATCH_PARENT
                 height = GridLayout.LayoutParams.MATCH_PARENT

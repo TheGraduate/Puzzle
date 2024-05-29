@@ -26,24 +26,22 @@ class PuzzleSelectionActivity : AppCompatActivity() {
             R.drawable.tyanochka3,
             // Добавьте сюда миниатюры всех доступных пазлов
         )
-
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(this, 2)
-        recyclerView.adapter = PuzzleAdapter(puzzleList) { selectedPuzzleIndex  ->
-            startMainActivity(selectedPuzzleIndex)
-        }
 
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
+        recyclerView.adapter = PuzzleAdapter(puzzleList) { selectedPuzzleResId  ->
+            startMainActivity(selectedPuzzleResId)
+        }
         backBtnToMenu = findViewById(R.id.btn_back_to_menu_from_puzzle_selection)
+
         backBtnToMenu.setOnClickListener {
             val intent = Intent(this, MainMenuActivity::class.java)
             startActivity(intent)
         }
-
     }
-
-    private fun startMainActivity(selectedPuzzleIndex : Int) {
+    private fun startMainActivity(selectedPuzzleResId : Int) {
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("selectedPuzzle", selectedPuzzleIndex )
+        intent.putExtra("selectedPuzzle", selectedPuzzleResId )
         startActivity(intent)
     }
 

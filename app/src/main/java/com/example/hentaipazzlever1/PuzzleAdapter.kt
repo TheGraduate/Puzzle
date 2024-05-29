@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class PuzzleAdapter(
     private val puzzleList: List<Int>,
-    private val clickListener: (Int) -> Unit
+    //private val clickListener: (Int) -> Unit
+    private val onPuzzleSelected: (Int) -> Unit
 ) : RecyclerView.Adapter<PuzzleAdapter.PuzzleViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PuzzleViewHolder {
@@ -17,16 +18,23 @@ class PuzzleAdapter(
     }
 
     override fun onBindViewHolder(holder: PuzzleViewHolder, position: Int) {
-        holder.bind(puzzleList[position], clickListener)
+        //holder.bind(puzzleList[position], clickListener)
+        val puzzleResId = puzzleList[position]
+        holder.bind(puzzleResId)
     }
 
     override fun getItemCount(): Int = puzzleList.size
 
-    class PuzzleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(puzzleResId: Int, clickListener: (Int) -> Unit) {
-            val imageView = itemView.findViewById<ImageView>(R.id.puzzleImageView)
+    inner class PuzzleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val imageView: ImageView = itemView.findViewById(R.id.puzzleImageView)
+        fun bind(puzzleResId: Int/*, clickListener: (Int) -> Unit*/) {
+            //val imageView = itemView.findViewById<ImageView>(R.id.puzzleImageView)
+
             imageView.setImageResource(puzzleResId)
-            itemView.setOnClickListener { clickListener(adapterPosition ) }
+            itemView.setOnClickListener {
+                //clickListener(adapterPosition )
+                onPuzzleSelected(puzzleResId)
+            }
         }
     }
 }
