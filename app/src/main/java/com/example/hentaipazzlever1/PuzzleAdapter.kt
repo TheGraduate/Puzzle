@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 class PuzzleAdapter(
     private val puzzleList: List<Int>,
     //private val clickListener: (Int) -> Unit
-    private val onPuzzleSelected: (Int) -> Unit
+    private val onPuzzleSelected: ((Int) -> Unit?)?
 ) : RecyclerView.Adapter<PuzzleAdapter.PuzzleViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PuzzleViewHolder {
@@ -26,14 +26,14 @@ class PuzzleAdapter(
     override fun getItemCount(): Int = puzzleList.size
 
     inner class PuzzleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.puzzleImageView)
+        private val imageView: ImageView = itemView.findViewById(R.id.puzzleImageView)
         fun bind(puzzleResId: Int/*, clickListener: (Int) -> Unit*/) {
             //val imageView = itemView.findViewById<ImageView>(R.id.puzzleImageView)
 
             imageView.setImageResource(puzzleResId)
             itemView.setOnClickListener {
                 //clickListener(adapterPosition )
-                onPuzzleSelected(puzzleResId)
+                onPuzzleSelected?.let { it -> it(puzzleResId) }
             }
         }
     }

@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var puzzleImages : List<Bitmap> //IntArray
     private lateinit var puzzleManager: PuzzleManager
     private lateinit var backBtnToSelection: Button
+    //private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         backBtnToSelection = findViewById(R.id.btn_back_to_selection)
         backBtnToSelection.setOnClickListener {
             val intent = Intent(this, PuzzleSelectionActivity::class.java)
@@ -46,4 +48,5 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
 }

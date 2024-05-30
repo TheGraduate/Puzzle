@@ -133,10 +133,11 @@ class PuzzleManager(private val context: Context, private val selectedPuzzleResI
     }
 
     private fun isPuzzleSolved(): Boolean {
-        if (!::initialPositions.isInitialized) return false
+        /*if (!::initialPositions.isInitialized) return false
         return puzzlePieces.withIndex().all { (index, imageView) ->
             initialPositions[index] == imageView.tag as? Int
-        }
+        }*/
+        return true
     }
 
     private fun showPuzzleSolved() {
@@ -144,10 +145,10 @@ class PuzzleManager(private val context: Context, private val selectedPuzzleResI
         ImageView(context).apply {
             setImageResource(selectedPuzzleResId)
             layoutParams = GridLayout.LayoutParams().apply {
-                width = GridLayout.LayoutParams.MATCH_PARENT
-                height = GridLayout.LayoutParams.MATCH_PARENT
+                width = GridLayout.LayoutParams.WRAP_CONTENT
+                height = GridLayout.LayoutParams.WRAP_CONTENT
             }
-            scaleType = ImageView.ScaleType.CENTER_CROP
+            scaleType = ImageView.ScaleType.FIT_XY
             puzzleGrid.addView(this)
         }
     }

@@ -10,6 +10,17 @@
     android:padding="16dp"
     android:background="@drawable/background_for_menu">
 
+    <Button
+        android:id="@+id/btn_change_language"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:onClick="onChangeLanguageClick"
+        android:text="@string/btn_change_language"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_switch_theme" />
 
     <TextView
         android:id="@+id/textView"
@@ -18,7 +29,7 @@
         android:layout_marginTop="8dp"
         android:background="@color/white"
         android:gravity="center"
-        android:text="Настройки"
+        android:text="@string/Settings"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -49,14 +60,13 @@
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/btn_switch_theme"
-        android:layout_width="237dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="72dp"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="136dp"
         android:background="@color/violet"
-        android:text="Сменить тему приложения"
+        android:text="@string/btn_change_theme"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -65,9 +75,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Вернуться"
+        android:text="@string/back_btn"
         app:layout_constraintBottom_toTopOf="@+id/btn_switch_theme"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

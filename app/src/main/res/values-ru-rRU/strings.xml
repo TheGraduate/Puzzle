@@ -3,9 +3,16 @@
     <string name="app_name">HentaiPazzle</string>
 
     <string name="back_btn">Назад</string>
-
-    <string name="btn_play">Play</string>
+    <string name="btn_play">Играть</string>
     <string name="btn_settings">Настройки</string>
     <string name="btn_exit">Выйти</string>
+    <string name="btn_gallery">Галерея</string>
+
+    <string name="btn_change_language">Сменить язык</string>
+    <string name="btn_change_theme">Сменить тему</string>
+
+    <string name="game_version">Вер.0.250.10</string>
+
+    <string name="Settings">Найстройки</string>
 
 </resources>

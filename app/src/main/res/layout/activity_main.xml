@@ -18,6 +18,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+<!--    <ImageView-->
+<!--        android:id="@+id/fullScreenImageView"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_gravity="center_vertical"-->
+<!--        android:padding="2dp"-->
+<!--        android:scaleType="fitCenter"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
     <GridLayout
         android:id="@+id/puzzleGrid"
         android:layout_width="match_parent"
@@ -34,7 +47,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.8">
-
     </GridLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
