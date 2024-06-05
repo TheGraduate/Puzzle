@@ -38,7 +38,7 @@ class PuzzleManager(private val context: Context, private val selectedPuzzleResI
         return pieces
     }
 
-    fun loadPuzzleImages(resourceId: Int, rows: Int = 3, cols: Int = 3): List<Bitmap> {
+    fun loadPuzzleImages(resourceId: Int, rows: Int = 4, cols: Int = 4): List<Bitmap> {
         val bitmap = loadBitmapFromResource(resourceId)
         return splitBitmap(bitmap, rows, cols)
     }
@@ -46,20 +46,26 @@ class PuzzleManager(private val context: Context, private val selectedPuzzleResI
     fun setupPuzzle(gridLayout: GridLayout, puzzleImages: List<Bitmap>/*, solvedImageId: Int*/) {
         puzzleGrid = gridLayout
 
+        puzzleGrid.rowCount = 4
+        puzzleGrid.columnCount = 4
+
         puzzleGrid.removeAllViews()
         puzzlePieces.clear()
 
-        val gridSize = 3 // assuming a 3x3 puzzle
+        val gridSize = 4 // assuming a 3x3 puzzle
         val pieceSize = context.resources.displayMetrics.widthPixels / gridSize - 40
 
         for (i in puzzleImages.indices) {
             val imageView = ImageView(context)
             imageView.setImageBitmap(puzzleImages[i])
-            imageView.layoutParams = GridLayout.LayoutParams().apply {
+            val layoutParams = GridLayout.LayoutParams().apply {
                 width = pieceSize
                 height = pieceSize
                 setMargins(2, 2, 2, 2)
+                rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
             }
+            imageView.layoutParams = layoutParams
             imageView.scaleType = ImageView.ScaleType.FIT_XY
             imageView.setOnClickListener { onPuzzlePieceClick(it as ImageView) }
             imageView.tag = i
@@ -95,10 +101,10 @@ class PuzzleManager(private val context: Context, private val selectedPuzzleResI
     }
 
     private fun isAdjacent(index1: Int, index2: Int): Boolean {
-        val row1 = initialPositions[index1] / 3
-        val col1 = initialPositions[index1] % 3
-        val row2 = initialPositions[index2] / 3
-        val col2 = initialPositions[index2] % 3
+        val row1 = initialPositions[index1] / 4
+        val col1 = initialPositions[index1] % 4
+        val row2 = initialPositions[index2] / 4
+        val col2 = initialPositions[index2] % 4
 
         return (row1 == row2 && abs(col1 - col2) == 1) || (col1 == col2 && abs(row1 - row2) == 1)
     }
@@ -133,11 +139,11 @@ class PuzzleManager(private val context: Context, private val selectedPuzzleResI
     }
 
     private fun isPuzzleSolved(): Boolean {
-        /*if (!::initialPositions.isInitialized) return false
+        if (!::initialPositions.isInitialized) return false
         return puzzlePieces.withIndex().all { (index, imageView) ->
             initialPositions[index] == imageView.tag as? Int
-        }*/
-        return true
+        }
+        //return true
     }
 
     private fun showPuzzleSolved() {
